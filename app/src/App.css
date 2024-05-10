@@ -1,38 +1,85 @@
-.App {
-  text-align: center;
+.app-container{
+  grid-template-colums:1fr;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body{
+  margin: 20px;
+  background-color: #778899;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Designates the layout for regular desktop use */
+@media (min-width:600px){
+  .app-container{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:20px;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
+.notes-grid{
+  display:grid;
+  grid-template-columns:repeat(
+    auto-fill,
+    minmax(250px, 1fr)
+  );
+  
+  /* Ensures row stay the same size */
+  grid-auto-rows: minmax(250px, auto);
+  gap: 20px;
+}
+
+.note-item{
+  display:flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border: 1px solid #ccc;
+  padding:10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 2px 2px;
+  cursor: pointer;
+  min-width: 250px;
+  max-width: fit-content;
+  background-color: #ECE63D ;
 }
 
-.App-link {
-  color: #61dafb;
+.notes-header{
+  display:flex;
+  justify-content:flex-end;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.notes-header button{
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  cursor:pointer;
+  max-width: fit-content;
+}
+
+h2{
+  margin: 0px;
+}
+
+.note-form{
+  display:flex;
+  flex-direction:column;
+  gap: 20px;
+}
+
+textarea,
+input{
+  border-radius:5px;
+  border:1px solid;
+  padding:5px;
+  font-size: 16px;
+}
+.note-form button{
+  border-radius: 5px;
+  border: none;
+  padding:10px;
+  font-size: 16px;
+}
+
+.note-form button:hover{
+  background: chartreuse;
+  cursor:pointer;
 }
