@@ -34,16 +34,11 @@ const App = () => {
   const [ title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  // Creates a state that will be a currently selected note, default state is null
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
-  /*function handleSubmit (event:React.FormEvent){
-    const inputElement = document.getElementById("noteInput") as HTMLInputElement;
-    const inputHeader = document.getElementById("noteTitle") as HTMLInputElement;
-    const title = inputHeader.value;
-    const content = inputElement.value;
-    let Note = {3: 4, header, content};
-    notes.push(Note);
-  }*/
-  const handleSubmit = (event: React.FormEvent) => {
+  // Function for handling the Add Note button event
+  const handleAddNote = (event: React.FormEvent) => {
     event.preventDefault();
     console.log("title: " , title);
     console.log("content:", content);
@@ -53,18 +48,81 @@ const App = () => {
       title: title,
       content: content
     }
+    if(content.trim() !== "" && title.trim() !==""){
+      setNotes([newNote, ...notes]);
+      setTitle("");
+      setContent("");
+    }
+  }
+  // Function for handling when user clicks on a note, accepts a type note
+  // Saves to state using the setSelectedNote 
+  const handleNoteClick = (note:Note) => {
+    setSelectedNote(note);
+    setTitle(note.title);
+    setContent(note.content);
+  } 
+  const handleUpdateNote = (event:React.FormEvent) =>{
+    // preventDefault, stops form from submitting whenever user submits
+    event.preventDefault();
 
-    setNotes([newNote, ...notes]);
-    setTitle("");
-    setContent("");
+    // If user doesn't have a selected note, returns to prior state
+    if(!selectedNote){
+      return;
+    }
+
+    const updatedNote: Note ={
+      id: selectedNote.id,
+      title: title,
+      content: content,
+    }
+
+    // Map function, to create new array that updates new array with the new note object
+    // Only updates note that the user has selected as the map will iterate over each note element
+    const updatedNotesList = notes.map((note)=>
+      note.id === selectedNote.id
+        ? updatedNote
+        : note
+    )
+
+    setNotes(updatedNotesList)
+    setTitle("")
+    setContent("")
+    setSelectedNote(null);
+  }
+  const handleCancel = () => {
+    setTitle("")
+    setContent("")
+    setSelectedNote(null);
+  }
+
+  const deleteNote = (
+    event : React.MouseEvent,
+    noteId: number
+  ) =>{
+    // Onclick event is nested within the note so prevents
+    event.stopPropagation();
+
+    // Filter function iterates over the array, applies the function that we've defined
+    // Returns all the notes that don't equal the ID of the note that was passed in
+    const updatedNotes = notes.filter(
+      (note) => note.id != noteId
+    )
+
+    setNotes(updatedNotes);
 
   }
+
   return(
     <div className="app-container">
       {/* Input for note */}
       <form 
         className = "note-form"
-        onSubmit ={(event) => handleSubmit(event)}
+        
+        onSubmit ={(event) =>
+          selectedNote 
+          ? handleUpdateNote(event)
+          : handleAddNote(event)
+        }
         >
         <input 
           placeholder = "Title" 
@@ -86,20 +144,39 @@ const App = () => {
           rows = {10}
           required>  
         </textarea>
-        <button
-          id="submit"
-          onClick={handleSubmit}
-          >
-          Add Note
-        </button>
+          {/*Displays edit options if a note has been selected*/}
+          {selectedNote ? (
+            <div className = "edit-buttons">
+              <button type = "submit">Update</button>
+              <button onClick={handleCancel}>Cancel</button>
+            </div>
+          ) : (
+            <button
+            id="submit"
+            onClick={handleAddNote}
+            >
+            Add Note
+          </button>
+          )}
+
 
 
       </form>
       <div className = "notes-grid">
         {notes.map((note)=>(
-          <div className = "note-item" key={note.id}>
+          <div 
+            className = "note-item" key={note.id}
+            // When note-item is clicked, passes in the note to our function
+            onClick={() => handleNoteClick(note)}
+          >
             <div className ="notes-header">
-              <button><img src="images/x.png" alt="x"></img></button>
+              <button
+                onClick={(event) =>
+                  deleteNote(event, note.id)
+
+                }>
+                <img src="images/close.png" alt="x"></img>
+                </button>
             </div>
           <h2>{note.title}</h2>
           <p>{note.content}</p>
