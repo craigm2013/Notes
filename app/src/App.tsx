@@ -31,7 +31,7 @@ const App = () => {
     },
   ]);
 
-  const [ title, setTitle] = useState("");
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   // Creates a state that will be a currently selected note, default state is null
