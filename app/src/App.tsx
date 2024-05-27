@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import React from "react";
 
 type Note = {
@@ -36,6 +36,24 @@ const App = () => {
 
   // Creates a state that will be a currently selected note, default state is null
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  useEffect(()=>{
+    const fetchNotes = async()=>{
+      try{
+        const response = await 
+          fetch("http://localhost:5000/api/notes");
+
+        const notes: Note[] = await response.json();
+        setNotes(notes);
+      }
+      catch(e){
+        console.log(e);
+      }
+    }
+    fetchNotes();
+
+    
+  }, []);
 
   // Function for handling the Add Note button event
   const handleAddNote = (event: React.FormEvent) => {
